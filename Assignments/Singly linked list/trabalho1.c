@@ -45,32 +45,45 @@ int option(Matriz *matrizes);
 void printa_duas(Matriz *N1, Matriz *N2);
 
 int main(){
-	int menu;
-	Matriz matrizes[2]; // armazena as 2 matrizes iniciais
+    int menu;
+    Matriz matrizes[2]; 
 
-	printf(" -------- TRABALHO 1 - ESTRUTURAS DE DADOS I --------\n\n                   BEM-VINDO(A)!\n\n");
+    printf(" -------- TRABALHO 1 - ESTRUTURAS DE DADOS I --------\n\n                   BEM-VINDO(A)!\n\n");
 
-	// extrai as dimensões das matrizes
-	for (int i = 0; i < 2; i++)
-	{
-		printf("          | INSERCAO DE MATRIZES ESPARSAS |\n\n");
-		printf("\n * MATRIZ %d* \n\n", i+1);
-		printf("DIMENSOES\n");
-		printf("Altura: ");
-		scanf("%d", &matrizes[i].linhas); 
-		printf("Largura: ");
-		scanf("%d", &matrizes[i].colunas); 
-	
-		// inicializa matriz
-		inicializa_lista(&matrizes[i].lista);
-		system("cls");
-		
-		// insere dados na matriz
-		insere_dados(
-			&matrizes[i].lista,
-			matrizes[i].linhas,
-			matrizes[i].colunas);
-	}
+    for (int i = 0; i < 2; i++)
+    {
+        printf("          | INSERCAO DE MATRIZES ESPARSAS |\n\n");
+        printf("\n * MATRIZ %d* \n\n", i+1);
+        
+        // validacao
+        while (1) 
+        {
+            printf("DIMENSOES\n");
+            printf("Altura: ");
+            int res1 = scanf("%d", &matrizes[i].linhas);
+            printf("Largura: ");
+            int res2 = scanf("%d", &matrizes[i].colunas);
+
+            // numeros > 0
+            if (res1 == 1 && res2 == 1 && matrizes[i].linhas > 0 && matrizes[i].colunas > 0) 
+            {
+                break; 
+            }
+
+            printf("\nApenas numeros inteiros maiores que zero.\n\n");
+            while (getchar() != '\n'); // limpa o buffer do teclado
+        }
+    
+        // inicializa matriz
+        inicializa_lista(&matrizes[i].lista);
+        system("cls");
+        
+        // insere dados na matriz
+        insere_dados(
+            &matrizes[i].lista,
+            matrizes[i].linhas,
+            matrizes[i].colunas);
+    }
 
 	// printa as matrizes (com os zeros)
 	printf("MATRIZES ADICIONADAS COM SUCESSO!\n\nMatriz 1: \n\n");
@@ -200,7 +213,15 @@ void insere_dados(Nodo **N, int linha, int coluna)
 		for (int j = 0; j < coluna; j ++) {
 			
 			printf("Linha %d coluna %d: ", i+1, j+1);
-			scanf("%f", &value);
+
+			// tratamento de letras 
+			while (scanf("%f", &value) != 1)
+			{
+				printf("Somente numeros!\n");
+				while (getchar() != '\n');
+				printf("Linha %d coluna %d: ", i+1, j+1);
+			}
+
 			if (value == 0) 
 				continue;
 			insere_fim(N, value, i, j);
