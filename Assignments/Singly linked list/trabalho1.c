@@ -38,7 +38,7 @@ void printa_zero(Nodo *N, int linhas, int colunas);
 void deleta_lista(Nodo **N);
 void subtrai_matrizes(Matriz *N1, Matriz *N2);
 void soma_matrizes(Matriz *N1, Matriz *N2);
-void mult_matrizes(Nodo **N1, Nodo **N2, int linha1, int col1, int linha2, int col2);
+void mult_matrizes(Nodo *N1, Nodo *N2, int linha1, int col1, int linha2, int col2);
 void transposta(Nodo **N1, int linha, int col);
 void diagonal(Nodo **N, int linha, int col);
 int option(Matriz *matrizes);
@@ -99,7 +99,7 @@ int main(){
 			
 			case 3:
 				printf("MULTIPLICACAO\n\n");
-				mult_matrizes(&matrizes[0].lista, &matrizes[1].lista, matrizes[0].linhas, matrizes[0].colunas, matrizes[1].linhas, matrizes[1].colunas);
+				mult_matrizes(matrizes[0].lista, matrizes[1].lista, matrizes[0].linhas, matrizes[0].colunas, matrizes[1].linhas, matrizes[1].colunas);
 				break;
 			
 			case 4: {
@@ -346,7 +346,7 @@ void soma_matrizes (Matriz *N1, Matriz *N2)
 	
 }
 
-void mult_matrizes (Nodo **N1, Nodo **N2, int linha1, int col1, int linha2, int col2)
+void mult_matrizes (Nodo *N1, Nodo *N2, int linha1, int col1, int linha2, int col2)
 {
 	Nodo *matriz3;
 	inicializa_lista(&matriz3);
@@ -355,9 +355,9 @@ void mult_matrizes (Nodo **N1, Nodo **N2, int linha1, int col1, int linha2, int 
 	float result = 0;
 	
 	printf("MATRIZ 1\n\n");
-	printa_zero(*N1, linha1, col1);
+	printa_zero(N1, linha1, col1);
 	printf("\n\nMATRIZ 2\n\n");
-	printa_zero(*N2, linha2, col2);
+	printa_zero(N2, linha2, col2);
 	
 	if (col1 != linha2){
 		printf("Dimensoes invalidas!");
@@ -375,8 +375,8 @@ void mult_matrizes (Nodo **N1, Nodo **N2, int linha1, int col1, int linha2, int 
 			for (int k = 0; k < col1; k++)
 			{
 				// multiplica os pares
-				result = busca_valor(*N1, i, k);
-				result *= busca_valor(*N2, k, j);
+				result = busca_valor(N1, i, k);
+				result *= busca_valor(N2, k, j);
 				// soma pra obter a posicao
 				soma += result;
 			}
@@ -421,10 +421,12 @@ void diagonal(Nodo **N, int linha, int col)
 		return;
 	}
 
+	printf("| ");
 	for (int i = 0; i < linha; i ++)
 	{
 		printf("%.2f ", busca_valor(*N, i, i));
 	}
+	printf(" |");
 
 }
 
@@ -434,10 +436,11 @@ int option(Matriz *matrizes)
 	int op;
 
 	printa_duas(&matrizes[0], &matrizes[1]);
-	while (op < 1 || op > 2)
+	while (op < 1 || op > 2) {
 		printf("\n\nInsira a matriz desejada: ");
+		scanf("%d", &op);
+	}
 
-	scanf("%d", &op);
 	return op;
 }
 
