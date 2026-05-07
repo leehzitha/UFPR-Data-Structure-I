@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// TRABALHO 1 - ESTRUTURAS DE DADOS I
+// EQUIPE: Gabriel Vieira Cascaes & Letícia Aparecida de Oliveira Burlinski
+// TURMA: 2026/1
+
 // struct do nó
 typedef struct No 
 {
@@ -18,21 +22,44 @@ typedef struct
 	int colunas;
 	
 } Matriz;
-	
+
+// declaração de funcoes
+// nas funcoes de soma e subtração, usamos a struct matriz como parâmetro porque consideramos ser uma prática interessante.
+// devido às especificações do trabalho e a necessidade que sentimos de praticar ponteiros de maneira mais semelhante aos exercícios em sala,
+// mantivemos as outras funções usando apenas a lista como parâmetro.
+
+Nodo *Cria_Nodo();
+void inicializa_lista(Nodo **N);
+void insere_fim(Nodo **N, float dado, int linha, int coluna);
+void insere_dados(Nodo **N, int linha, int coluna);
+float busca_valor(Nodo *N, int linha, int coluna);
+void printa_lista(Nodo **N);
+void printa_zero(Nodo *N, int linhas, int colunas);
+void deleta_lista(Nodo **N);
+void subtrai_matrizes(Matriz *N1, Matriz *N2);
+void soma_matrizes(Matriz *N1, Matriz *N2);
+void mult_matrizes(Nodo **N1, Nodo **N2, int linha1, int col1, int linha2, int col2);
+void transposta(Nodo **N1, int linha, int col);
+void diagonal(Nodo **N, int linha, int col);
+int option(Matriz *matrizes);
+void printa_duas(Matriz *N1, Matriz *N2);
+
 int main(){
-	int menu, a;
-	
+	int menu;
 	Matriz matrizes[2]; // armazena as 2 matrizes iniciais
+
 	printf(" -------- TRABALHO 1 - ESTRUTURAS DE DADOS I --------\n\n                   BEM-VINDO(A)!\n\n");
+
+	// extrai as dimensões das matrizes
 	for (int i = 0; i < 2; i++)
 	{
 		printf("          | INSERCAO DE MATRIZES ESPARSAS |\n\n");
 		printf("\n * MATRIZ %d* \n\n", i+1);
 		printf("DIMENSOES\n");
 		printf("Altura: ");
-		scanf("%d", &matrizes[i].linhas);
+		scanf("%d", &matrizes[i].linhas); 
 		printf("Largura: ");
-		scanf("%d", &matrizes[i].colunas);
+		scanf("%d", &matrizes[i].colunas); 
 	
 		// inicializa matriz
 		inicializa_lista(&matrizes[i].lista);
@@ -120,6 +147,7 @@ int main(){
 	} while (menu != 0);
 }
 
+// criação do nó
 Nodo * Cria_Nodo()
 {
 	Nodo *p;
@@ -127,16 +155,18 @@ Nodo * Cria_Nodo()
 	if(!p)
 	{
 		printf("Problema de alocação");
-	 	exit(0);
+		exit(0);
 	}
 	return p;
 } 
 
+// inicializacao da lista linear encadeada
 void inicializa_lista(Nodo **N)
 {
 	*N = NULL;
 }
 
+// mesma funcao dos exercicios, sem misterio
 void insere_fim(Nodo **N, float dado, int linha, int coluna)
 {
 	Nodo *novo, *aux;
@@ -158,6 +188,7 @@ void insere_fim(Nodo **N, float dado, int linha, int coluna)
 	}
 }
 
+// obtem os valores da matriz conforme as dimensões informadas pelo usuário
 void insere_dados(Nodo **N, int linha, int coluna) 
 {
 	float value;
@@ -178,38 +209,44 @@ void insere_dados(Nodo **N, int linha, int coluna)
 	}
 }
 
+// verifica se a posicao LxC de uma matriz existe na lista encadeada (é != 0)
 float busca_valor(Nodo *N, int linha, int coluna)
 {
-    while (N != NULL)
-    {
-        if (N->linha == linha && N->coluna == coluna)
-            return N->data;
+	while (N != NULL)
+	{
+		if (N->linha == linha && N->coluna == coluna)
+			return N->data; // se encontrar, retorna o valor
+		N = N->prox; // procura até que a lista acabe
+	}
 
-        N = N->prox;
-    }
-
-    return 0.00;
+	return 0.00;
 }
 
+// imprime a lista real, sem os zeros
 void printa_lista(Nodo **N)
 {
 	Nodo *aux;
 	aux = *N;
 	int linha, coluna;
+
+	if (aux == NULL)
+		return;
+
 	linha = aux->linha;
 	
 	while(aux != NULL)
 	{
 		if (aux->linha == linha)
-			printf("%.2f ", aux->data);
+			printf("%.2f ", aux->data); // se a linha do nó for a mesma que a do nó anterior, printa o elemento na mesma linha
 		else 
-			printf("\n%.2f ", aux->data);
+			printf("\n%.2f ", aux->data); // caso contrário, quebra a linha
 			
 		linha = aux->linha;
 		aux = aux->prox;
 	}
 }
 
+// imprime a matriz com os zeros
 void printa_zero(Nodo *N, int linhas, int colunas)
 {
 	for (int i = 0; i < linhas ; i ++ )
@@ -217,16 +254,14 @@ void printa_zero(Nodo *N, int linhas, int colunas)
 		printf("| ");
 		for (int j = 0; j < colunas; j ++)
 		{
-			
-			printf("%.2f ", busca_valor(N, i, j));
-					
+			printf("%.2f ", busca_valor(N, i, j));			
 		}
-		printf("|");
-		printf("\n");
+		printf("|\n");
 	}
 
 }
 
+// libera espaço da memoria
 void deleta_lista (Nodo **N)
 {
 	Nodo *aux =  *N;
@@ -245,7 +280,10 @@ void subtrai_matrizes (Matriz *N1, Matriz *N2)
 {
 	// verifica a dimensão das matrizes
 	if (N1->linhas != N2->linhas || N1->colunas != N2->colunas)
+	{
+		printf("As matrizes precisam ter a mesma dimensao!");
 		return;
+	}
 		
 	printa_duas(N1, N2);
 		
@@ -253,12 +291,7 @@ void subtrai_matrizes (Matriz *N1, Matriz *N2)
 	Nodo *matriz3;
 	inicializa_lista(&matriz3);
 	
-	int linha, col;
 	float sub;
-	
-	Nodo *aux1, *aux2;
-	
-	sub = 0;
 
 	for (int i = 0; i < N1->linhas; i ++) 
 	{
@@ -276,7 +309,6 @@ void subtrai_matrizes (Matriz *N1, Matriz *N2)
 	
 	printa_zero(matriz3, N1->linhas, N1->colunas);
 	deleta_lista(&matriz3);
-//	return matriz3;
 }
 
 void soma_matrizes (Matriz *N1, Matriz *N2)
@@ -318,10 +350,7 @@ void mult_matrizes (Nodo **N1, Nodo **N2, int linha1, int col1, int linha2, int 
 {
 	Nodo *matriz3;
 	inicializa_lista(&matriz3);
-	Nodo *aux1, *aux2;
-	
-	aux1 = *N1;
-	aux2 = *N2;
+
 	float soma = 0;
 	float result = 0;
 	
@@ -335,18 +364,23 @@ void mult_matrizes (Nodo **N1, Nodo **N2, int linha1, int col1, int linha2, int 
 		return;
 	}	
 	
+	// pra cada linha da matriz 1
 	for (int i = 0; i < linha1; i ++ )
 	{
+		// pra cada coluna da matriz 2
 		for (int j = 0; j < col2; j++)
 		{				
 			soma = 0;
+			// percorre os elementos das matrizes na linha x col correspondente
 			for (int k = 0; k < col1; k++)
 			{
+				// multiplica os pares
 				result = busca_valor(*N1, i, k);
 				result *= busca_valor(*N2, k, j);
+				// soma pra obter a posicao
 				soma += result;
 			}
-			
+			// só adiciona na matriz 3 se o valor NAO for 0!!!
 			if (soma != 0)
 				insere_fim(&matriz3, soma, i, j);
 			
@@ -387,8 +421,6 @@ void diagonal(Nodo **N, int linha, int col)
 		return;
 	}
 
-	Nodo *aux;
-	
 	for (int i = 0; i < linha; i ++)
 	{
 		printf("%.2f ", busca_valor(*N, i, i));
@@ -396,24 +428,28 @@ void diagonal(Nodo **N, int linha, int col)
 
 }
 
+// no caso de funcoes que necessitam de apenas uma matriz, exibe as matrizes alocadas e pergunta ao usuário qual delas deseja selecionar
 int option(Matriz *matrizes)
 {
 	int op;
-	printf("MATRIZ 1:\n\n");
-	printa_zero(matrizes[0].lista, matrizes[0].linhas, matrizes[0].colunas);
-	printf("\nMATRIZ 2\n\n");
-	printa_zero(matrizes[1].lista, matrizes[1].linhas, matrizes[1].colunas);
-	printf("\n\nInsira a matriz desejada: ");
+
+	printa_duas(&matrizes[0], &matrizes[1]);
+	while (op < 1 || op > 2)
+		printf("\n\nInsira a matriz desejada: ");
+
 	scanf("%d", &op);
 	return op;
 }
+
 
 void printa_duas(Matriz *N1, Matriz *N2)
 {
 	// printa as matrizes para visualizar se o resultado está correto
 	printf("MATRIZ 1\n\n");
 	printa_zero(N1->lista, N1->linhas, N1->colunas);
+
 	printf("\n\nMATRIZ 2\n\n");
 	printa_zero(N2->lista , N2->linhas, N2->colunas);
+
 	printf("\n\n");
 }
