@@ -1,9 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 // TRABALHO 1 - ESTRUTURAS DE DADOS I
 // EQUIPE: Gabriel Vieira Cascaes & Letícia Aparecida de Oliveira Burlinski
 // TURMA: 2026/1
+
+#include <stdio.h>
+#include <stdlib.h>
 
 // struct do nó
 typedef struct No 
